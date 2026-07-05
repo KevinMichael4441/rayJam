@@ -9,14 +9,6 @@
 *
 ********************************************************************************************/
 
-class testClass
-{
-public:
-    int x;
-};
-
-
-
 
 #include "raylib.h"
 
@@ -124,8 +116,6 @@ void UpdateDrawFrame(void)
     //----------------------------------------------------------------------------------
     // TODO: Update variables / Implement example logic at this point
    
-    testClass test;
-    std::cout << test.x << std::endl;
     frameCounter++;
     //----------------------------------------------------------------------------------
 
