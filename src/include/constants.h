@@ -1,0 +1,1 @@
+#define TARGET_FPS  60

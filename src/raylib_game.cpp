@@ -11,6 +11,8 @@
 
 
 #include "raylib.h"
+#include "include/game.h"
+#include "include/constants.h"
 
 #if defined(PLATFORM_WEB)
     #include <emscripten/emscripten.h>      // Emscripten library
@@ -51,106 +53,88 @@ typedef enum {
 static const int screenWidth = 720;
 static const int screenHeight = 720;
 
-static RenderTexture2D target = { 0 };  // Render texture to render our game
-static int frameCounter = 0;
+// Function Prototypes
+// Game Loop Function
+void GameLoop(GameData *data);
 
-// TODO: Define global variables here, recommended to make them static
+/**
+ * main - Entry point of the whole shebang.
+ *
+ * Sets up the Raylib window, fires up the game systems, and kicks off
+ * the main loop. When the player finally closes the window, everything
+ * gets cleaned up properly ..... none of this "sure it's grand" memory 
+ * leaking is no problem I've loads after shelling out for another 64 GB of DDR5.
+ */
 
-//----------------------------------------------------------------------------------
-// Module Functions Declaration
-//----------------------------------------------------------------------------------
-static void UpdateDrawFrame(void);      // Update and Draw one frame
-
-//------------------------------------------------------------------------------------
-// Program main entry point
-//------------------------------------------------------------------------------------
 int main(void)
 {
 #if !defined(_DEBUG)
     SetTraceLogLevel(LOG_NONE);         // Disable raylib trace log messages
 #endif
 
-    // Initialization
-    //--------------------------------------------------------------------------------------
-    InitWindow(screenWidth, screenHeight, "raylib gamejam template");
-    
+
+	srand(time(NULL));
+
+	// Init raylib window
+	InitWindow(screenWidth, screenHeight, "Aliens v Mech by Kevin Michael c00313609");
+
     // TODO: Load resources / Initialize variables at this point
-    
-    // Render texture to draw, enables screen scaling
-    // NOTE: If screen is scaled, mouse input should be scaled proportionally
-    target = LoadRenderTexture(screenWidth, screenHeight);
-    SetTextureFilter(target.texture, TEXTURE_FILTER_BILINEAR);
+    // Create GameData Pointer
+	GameData *data = (GameData *)(malloc(sizeof(GameData)));
+
+	// Initialise Game
+	InitGame(data);
 
 #if defined(PLATFORM_WEB)
-    emscripten_set_main_loop(UpdateDrawFrame, 60, 1);
+    emscripten_set_main_loop(GameLoop(data), 60, 1);
 #else
-    SetTargetFPS(60);     // Set our game frames-per-second
-    //--------------------------------------------------------------------------------------
+	// Set Target FPS
+	SetTargetFPS(TARGET_FPS);
 
-    // Main game loop
-    while (!WindowShouldClose())    // Detect window close button
-    {
-        UpdateDrawFrame();
-    }
+	// Raylib while loop
+	while (!WindowShouldClose()) // Detect window close button or ESC key
+	{
+		// Call GameLoop
+		GameLoop(data);
+	}
 #endif
-
-    // De-Initialization
-    //--------------------------------------------------------------------------------------
-    UnloadRenderTexture(target);
     
-    // TODO: Unload all loaded resources at this point
+    // TODO: Unload all loaded resources at this point-------------------------------------------------------------------------------------
+	// Free resources
+	CloseGame(data);
 
-    CloseWindow();        // Close window and OpenGL context
-    //--------------------------------------------------------------------------------------
+	// Close Raylib Window
+	CloseWindow();
 
-    return 0;
+	return 0;
 }
 
-//--------------------------------------------------------------------------------------------
-// Module Functions Definition
-//--------------------------------------------------------------------------------------------
-// Update and draw frame
-void UpdateDrawFrame(void)
+/**
+ * GameLoop - One full cycle of updating and drawing.
+ *
+ * Updates the game world first (because drawing before thinking rarely ends well),
+ * then starts the Raylib drawing phase and renders the whole scene.
+ *
+ * @data: Pointer to the shared GameData struct.
+ */
+
+void GameLoop(GameData *data)
 {
-    // Update
-    //----------------------------------------------------------------------------------
-    // TODO: Update variables / Implement example logic at this point
-   
-    frameCounter++;
-    //----------------------------------------------------------------------------------
+	// Update Game Data
+	// Should be outside BeginDrawing(); and EndDrawing();
+	float deltaTime = GetFrameTime(); // Get delta time frame time expressed in seconds
 
-    // Draw
-    //----------------------------------------------------------------------------------
-    // Render game screen to a texture, 
-    // it could be useful for scaling or further shader postprocessing
-    BeginTextureMode(target);
-        ClearBackground(RAYWHITE);
-        
-        // TODO: Draw your game screen here
+	UpdateGame(data, deltaTime);
 
-        DrawRectangle(70, 90, 200, 200, BLACK);
-        DrawRectangle(70 + 16, 90 + 16, 200 - 32, 200 - 32, RAYWHITE);
-        DrawText("raylib", 70 + 200 - MeasureText("raylib", 40) - 32, 90 + 200 - 40 - 24, 40, BLACK);
+	// Raylib function Draw
+	BeginDrawing();
 
-        DrawText("6.x", 290, 90 - 26, 280, BLACK);
-        DrawText("GAMEJAM", 70, 90 + 210, 120, MAROON);
+	// Clear the screen with a grren background
+	ClearBackground(DARKGREEN);
 
-        if ((frameCounter/20)%2) DrawText("are you ready?", 160, 500, 50, BLACK);
-        
-        DrawRectangleLinesEx((Rectangle){ 0, 0, screenWidth, screenHeight }, 16, BLACK);
-        
-    EndTextureMode();
-    
-    // Render to screen (main framebuffer)
-    BeginDrawing();
-        ClearBackground(RAYWHITE);
-        
-        // Draw render texture to screen, scaled if required
-        DrawTexturePro(target.texture, (Rectangle){ 0, 0, (float)target.texture.width, -(float)target.texture.height }, 
-            (Rectangle){ 0, 0, (float)target.texture.width, (float)target.texture.height }, (Vector2){ 0, 0 }, 0.0f, WHITE);
+	// Draw the Game Objects
+	DrawGame(data);
 
-        // TODO: Draw everything that requires to be drawn at this point, maybe UI?
-
-    EndDrawing();
-    //----------------------------------------------------------------------------------  
+	// Raylib End drawing to Frame Buffer
+	EndDrawing();
 }
