@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include "raymath.h"
 
 
 
@@ -41,23 +42,15 @@ void Player::handleInput()
 
 void Player::move()
 {
-    if (m_destination.x < m_position.x)
+    Vector2 difference =  Vector2Subtract(m_destination, m_position);
+    if (Vector2Length(difference) > 5)
     {
-        m_position.x -= 1;
-    }
-    else if (m_destination.x > m_position.x)
-    {
-        m_position.x += 1;
-    }
+        Vector2 velocity = Vector2Normalize(Vector2{m_destination.x - m_position.x, m_destination.y - m_position.y});
 
-    if (m_destination.y < m_position.y)
-    {
-        m_position.y -= 1;
-    }
-    else if (m_destination.y > m_position.y)
-    {
-        m_position.y += 1;
-    }
+        m_position += velocity;
+    }  
+
+
 }
 
 void Player::draw()
