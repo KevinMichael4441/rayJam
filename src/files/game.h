@@ -37,7 +37,7 @@ Game::Game()
 void Game::update()
 {
     m_player.update();
-    for (Enemy enemy : m_enemies)
+    for (Enemy &enemy : m_enemies)
     {
         enemy.update(m_player.getPosition());
     }
@@ -53,7 +53,7 @@ void Game::draw()
         ClearBackground(RAYWHITE);
         
 
-        for (Enemy enemy : m_enemies)
+        for (Enemy &enemy : m_enemies)
         {
             enemy.draw();
         }

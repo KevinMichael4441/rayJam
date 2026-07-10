@@ -64,8 +64,6 @@ void Enemy::move(Vector2 t_playerPos)
 
         m_position += heading;
     }
-
-
 }
 
 void Enemy::draw()
