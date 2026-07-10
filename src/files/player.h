@@ -12,11 +12,12 @@ public:
     void draw();
 
     Vector2 getPosition();
+    void setDestination(Vector2 t_destination);
 
 private:
 
     void move();
-    void handleInput();
+    
 
     Vector2 m_position{360,360};
     const float m_radius{20};
@@ -30,16 +31,12 @@ Player::Player()
 
 void Player::update()
 {
-    handleInput();
     move();
 }
 
-void Player::handleInput()
+void Player::setDestination(Vector2 t_destination)
 {
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
-    {
-        m_destination = GetMousePosition();
-    }
+    m_destination = t_destination;
 }
 
 void Player::move()

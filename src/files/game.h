@@ -21,6 +21,8 @@ private:
 
     Player m_player;
     std::vector<Enemy> m_enemies;
+
+    void handleInput();
 };
 
 Game::Game()
@@ -33,9 +35,25 @@ Game::Game()
     }
 }
 
+void Game::handleInput()
+{
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
+    {
+        m_player.setDestination(GetMousePosition());
+    }
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    {
+            // ???
+    }
+}
+
 
 void Game::update()
 {
+    handleInput();
+
+
     m_player.update();
     for (Enemy &enemy : m_enemies)
     {
