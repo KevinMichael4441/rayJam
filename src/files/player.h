@@ -11,6 +11,8 @@ public:
     void update();
     void draw();
 
+    Vector2 getPosition();
+
 private:
 
     void move();
@@ -56,4 +58,11 @@ void Player::move()
 void Player::draw()
 {
     DrawCircleV(m_position, m_radius, GREEN);
+}
+
+
+
+Vector2 Player::getPosition()
+{
+    return m_position;
 }

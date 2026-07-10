@@ -67,6 +67,8 @@ static void UpdateDrawFrame(void);      // Update and Draw one frame
 //------------------------------------------------------------------------------------
 int main(void)
 {
+    srand(time(nullptr));
+
 #if !defined(_DEBUG)
     SetTraceLogLevel(LOG_NONE);         // Disable raylib trace log messages
 #endif
