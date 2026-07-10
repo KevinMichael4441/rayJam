@@ -1,6 +1,9 @@
 static RenderTexture2D target = { 0 };  // Render texture to render our game
 static int frameCounter = 0;
 
+
+#include "player.h"
+
 class Game
 {
 public:
@@ -8,6 +11,10 @@ public:
     Game();
     void update();
     void draw();
+
+private:
+
+    Player m_player;
 };
 
 Game::Game()
@@ -17,12 +24,7 @@ Game::Game()
 
 void Game::update()
 {
-    // Update
-    //----------------------------------------------------------------------------------
-    // TODO: Update variables / Implement example logic at this point
-    // All off the update code
-    frameCounter++;
-    //----------------------------------------------------------------------------------
+    m_player.update();
 }
 
 void Game::draw()
@@ -34,9 +36,8 @@ void Game::draw()
     BeginTextureMode(target);
         ClearBackground(RAYWHITE);
         
-        // TODO: Draw your game screen here
-        // DRAW CODE
-        DrawRectangle(100, 100, 100, 100, GREEN); 
+
+        m_player.draw();
         
     EndTextureMode();
     
