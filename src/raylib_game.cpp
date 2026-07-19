@@ -51,7 +51,7 @@ typedef enum {
 //----------------------------------------------------------------------------------
 // Global Variables Definition (local to this module)
 //----------------------------------------------------------------------------------
-static const int screenWidth = 720;
+static const int screenWidth = 1280;
 static const int screenHeight = 720;
 
 
