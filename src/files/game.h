@@ -1,10 +1,12 @@
 static RenderTexture2D target = { 0 };  // Render texture to render our game
 static int frameCounter = 0;
 
-
+static int constexpr MAX_BALLS = 10;
 
 #include <vector>
 #include <iostream>
+
+#include "ball.h"
 
 
 class Game
@@ -12,6 +14,7 @@ class Game
 public:
 
     Game();
+    void init(int t_ActiveBalls);
     void update();
     void draw();
 
@@ -19,10 +22,57 @@ private:
 
 
     void handleInput();
+
+    std::vector<Ball> m_leftBalls;
+    std::vector<Ball> m_rightBalls;
+
+
 };
 
 Game::Game()
 {
+    m_leftBalls.reserve(MAX_BALLS);
+    m_rightBalls.reserve(MAX_BALLS);
+
+    for (int index = 0; index < MAX_BALLS; index++)
+    {
+        Ball leftBall;
+        m_leftBalls.push_back(leftBall);
+
+        Ball rightBall;
+        m_rightBalls.push_back(rightBall);
+    }
+}
+
+void Game::init(int t_ActiveBalls)
+{
+
+    
+    int maxRadius = 100;
+
+    for (int index = 0; index < MAX_BALLS; index++)
+    {
+
+        int currentLeftRadius = (rand() % maxRadius) + 1; 
+        while (currentLeftRadius > 80)
+        // capping max radius to 80
+        {
+            currentLeftRadius = 80; 
+        }
+
+
+        int currentRightRadius = (rand() % maxRadius) + 1; 
+        if (currentRightRadius > 80)
+        // capping max radius to 80
+        {
+            currentRightRadius = 80; 
+        }
+
+
+
+        m_leftBalls[index].init(currentLeftRadius);
+        m_rightBalls[index].init(currentRightRadius);
+    }
 }
 
 void Game::handleInput()
@@ -41,7 +91,17 @@ void Game::handleInput()
 
 void Game::update()
 {
+    float deltaTime = GetFrameTime(); // Get delta time frame time expressed in seconds
+	
     handleInput();
+
+
+    for (int index = 0; index < MAX_BALLS; index++)
+    {
+        m_leftBalls[index].update(deltaTime);
+        m_rightBalls[index].update(deltaTime);
+    }
+    
 }
 
 void Game::draw()
@@ -54,7 +114,11 @@ void Game::draw()
         ClearBackground(RAYWHITE);
         
         
-        DrawRectangle(200, 200, 500, 400, GREEN); 
+        for (int index = 0; index < MAX_BALLS; index++)
+        {
+            m_leftBalls[index].draw();
+            m_rightBalls[index].draw();
+        }
         
     EndTextureMode();
     
